@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--
+  EfletexIA &#8212; Acceso a plataformas T1 y T2
+  Pantalla para "Iniciar sesi&#243;n" con el mismo dise&#241;o del login actual (Tailwind + Inter + paleta brand/dark).
+  Para integrarla: reemplaza el contenido de login.html o enlaza "Log in" a este archivo. Las tarjetas T1 y T2 abren login-t1.html y login-t2.html.
+  Las direcciones de cada plataforma est&#225;n en CONFIG (al final del archivo).
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EfletexIA &#8212; Acceso a la Plataforma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#FFF7ED', 100: '#FFEDD5', 200: '#FED7AA', 300: '#FDBA74', 400: '#FB923C', 500: '#F97316', 600: '#EA580C', 700: '#C2410C' },
+                        dark: { 950: '#050505', 900: '#0A0A0A', 800: '#111111', 700: '#1A1A1A', 600: '#222222', 500: '#2A2A2A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .map-grid {
+            background-image:
+                linear-gradient(rgba(249,115,22,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249,115,22,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .stat-pill {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 12px 20px; text-align: center;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up-anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+
+        /* Tarjetas de plataforma */
+        .plat-card {
+            display: flex; align-items: center; gap: 16px; width: 100%; text-align: left;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 20px; transition: all 0.25s ease;
+        }
+        a.plat-card:hover {
+            border-color: rgba(249,115,22,0.45); background: rgba(249,115,22,0.05);
+            box-shadow: 0 0 32px rgba(249,115,22,0.12); transform: translateY(-1px);
+        }
+        a.plat-card:hover .plat-arrow { color: #F97316; transform: translateX(3px); }
+        .plat-card.disabled { opacity: 0.55; cursor: not-allowed; }
+        .plat-icon {
+            width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;
+        }
+        .plat-icon.on { background: linear-gradient(135deg, #F97316, #EA580C); color: #fff; box-shadow: 0 0 20px rgba(249,115,22,0.35); }
+        .plat-icon.off { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+        .plat-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+        .plat-badge.on { color: #00FF94; background: rgba(0,255,148,0.08); border: 1px solid rgba(0,255,148,0.25); }
+        .plat-badge.off { color: #FBBF24; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); }
+        .plat-arrow { color: rgba(255,255,255,0.3); transition: all 0.25s ease; margin-left: auto; font-size: 20px; }
+        .divider { height: 1px; background: rgba(255,255,255,0.07); }
+    </style>
+</head>
+<body class="bg-dark-900 text-white min-h-screen overflow-x-hidden">
+
+<div class="flex min-h-screen">
+
+    <!-- ===== PANEL DE MARCA (igual al login actual) ===== -->
+    <div class="hidden lg:flex flex-col w-[44%] flex-shrink-0 relative overflow-hidden bg-dark-950">
+        <div class="absolute inset-0 map-grid"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%); pointer-events:none;"></div>
+        <div class="absolute bottom-[-5%] right-[-10%] w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(0,212,255,0.04) 0%, transparent 70%); pointer-events:none;"></div>
+
+        <div class="relative z-10 flex flex-col h-full p-10">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="font-bold text-lg tracking-tight">EfletexIA</a>
+                <a href="index.html" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors">
+                    <span data-icon="lucide:arrow-left" class="text-xs"></span> Volver al sitio
+                </a>
+            </div>
+
+            <div class="mt-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium" style="background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.2); color: #FB923C;">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+                    Plataforma activa &#183; 8 pa&#237;ses LatAm
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h1 class="text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight">
+                    Tu operaci&#243;n,<br><span class="gradient-text">tu acceso.</span>
+                </h1>
+                <p class="mt-4 text-white/50 text-base leading-relaxed max-w-xs">
+                    Desde aqu&#237; entras a la plataforma que opera tu distribuci&#243;n: primaria en T1 y secundaria en T2.
+                </p>
+            </div>
+
+            <div class="mt-8 flex flex-col gap-3.5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.15);">
+                        <span data-icon="lucide:truck" style="color:#F97316;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">T1 &#183; Cargas, ofertas, veh&#237;culos y facturaci&#243;n</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(0,212,255,0.07); border: 1px solid rgba(0,212,255,0.15);">
+                        <span data-icon="lucide:store" style="color:#00D4FF;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">T2 &#183; Ruteo, facturaci&#243;n en punto de venta y entrega</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(0,255,148,0.07); border: 1px solid rgba(0,255,148,0.15);">
+                        <span data-icon="lucide:life-buoy" style="color:#00FF94;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">Accesos y contrase&#241;as, siempre a trav&#233;s de Soporte</span>
+                </div>
+            </div>
+
+            <div class="mt-auto grid grid-cols-3 gap-3">
+                <div class="stat-pill"><div class="text-xl font-bold gradient-text">7.3K</div><div class="text-xs text-white/35 mt-0.5">Viajes/d&#237;a</div></div>
+                <div class="stat-pill"><div class="text-xl font-bold" style="color:#00FF94;">98%</div><div class="text-xs text-white/35 mt-0.5">SLA cumplido</div></div>
+                <div class="stat-pill"><div class="text-xl font-bold" style="color:#00D4FF;">+500</div><div class="text-xs text-white/35 mt-0.5">Empresas</div></div>
+            </div>
+            <div class="mt-6 text-xs text-white/20">&#169; 2026 EfletexIA &#183; Todos los derechos reservados</div>
+        </div>
+    </div>
+
+    <!-- ===== SELECTOR T1 / T2 ===== -->
+    <div class="flex-1 flex flex-col min-h-screen overflow-y-auto bg-dark-900">
+
+        <div class="lg:hidden flex items-center justify-between px-6 pt-6 pb-4">
+            <a href="index.html" class="font-bold text-base tracking-tight">EfletexIA</a>
+            <a href="index.html" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors">
+                <span data-icon="lucide:arrow-left" class="text-xs"></span> Volver
+            </a>
+        </div>
+
+        <div class="flex-1 flex items-start lg:items-center justify-center px-6 py-8 lg:py-12">
+            <div class="w-full max-w-md fade-up-anim">
+
+                <h2 class="text-2xl font-bold mb-1.5">Iniciar sesi&#243;n</h2>
+                <p class="text-sm text-white/40 mb-8">Elige la plataforma a la que quieres entrar.</p>
+
+                <div class="flex flex-col gap-4">
+                    <a id="cardT1" class="plat-card" href="#">
+                        <div class="plat-icon on">T1</div>
+                        <div>
+                            <div class="flex items-center gap-2.5">
+                                <span class="font-semibold text-base">Plataforma T1</span>
+                                <span class="plat-badge on">Disponible</span>
+                            </div>
+                            <p class="text-sm text-white/45 mt-1 leading-relaxed">Distribuci&#243;n primaria: cargas, ofertas, veh&#237;culos, facturaci&#243;n y operador log&#237;stico.</p>
+                        </div>
+                        <span data-icon="lucide:arrow-right" class="plat-arrow"></span>
+                    </a>
+
+                    <a id="cardT2" class="plat-card" href="#">
+                        <div id="iconT2" class="plat-icon on">T2</div>
+                        <div>
+                            <div class="flex items-center gap-2.5">
+                                <span class="font-semibold text-base">Plataforma T2</span>
+                                <span id="badgeT2" class="plat-badge on">Disponible</span>
+                            </div>
+                            <p class="text-sm text-white/45 mt-1 leading-relaxed">Distribuci&#243;n secundaria: ruteo, facturaci&#243;n en punto de venta y seguimiento de entrega.</p>
+                        </div>
+                        <span id="arrowT2" data-icon="lucide:arrow-right" class="plat-arrow"></span>
+                    </a>
+                </div>
+
+                <p class="text-xs text-white/35 mt-5 leading-relaxed">
+                    Cada plataforma tiene su propio usuario y contrase&#241;a. Para habilitar un acceso o cambiar tu contrase&#241;a, escr&#237;benos en
+                    <a id="lnkSoporte" href="#" target="_blank" rel="noopener" class="text-brand-400 hover:text-brand-300">Soporte</a>.
+                </p>
+
+                <div class="divider my-8"></div>
+
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-sm text-white/40">&#191;Todav&#237;a no eres cliente?</span>
+                    <a href="index.html#contacto" class="text-sm font-medium px-4 py-2.5 rounded-[10px] border transition-all"
+                       style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75);"
+                       onmouseover="this.style.borderColor='rgba(249,115,22,0.45)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+                        Solicitar informaci&#243;n
+                    </a>
+                </div>
+
+                <div class="mt-10 flex gap-4 text-xs text-white/30">
+                    <a href="index.html" class="hover:text-white/60">Inicio</a>
+                    <span>&#183;</span>
+                    <a id="lnkSoporte2" href="#" target="_blank" rel="noopener" class="hover:text-white/60">Soporte</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // \u2500\u2500 CONFIGURACI\u00d3N: direcciones de cada plataforma \u2500\u2500
+    const CONFIG = {
+        T1: 'login-t1.html',                               // pantalla de login T1 (plataforma real: https://efletexia.com/login/inicio)
+        T2: 'login-t2.html',                               // pantalla de login T2 (plataforma real: https://pruebast2.dtdevops.com/login)
+        T2_DISPONIBLE: true,                               // false = muestra T2 como "Pr\u00f3ximamente" y sin enlace
+        SOPORTE: 'https://portal-usuarios.dtdevops.com/'
+    };
+
+    document.getElementById('cardT1').href = CONFIG.T1;
+    document.getElementById('lnkSoporte').href = CONFIG.SOPORTE;
+    document.getElementById('lnkSoporte2').href = CONFIG.SOPORTE;
+
+    document.querySelectorAll('[data-icon]').forEach(e => e.classList.add('iconify'));
+
+    const t2 = document.getElementById('cardT2');
+    if (CONFIG.T2_DISPONIBLE) {
+        t2.href = CONFIG.T2;
+    } else {
+        t2.removeAttribute('href');
+        t2.classList.add('disabled');
+        document.getElementById('iconT2').className = 'plat-icon off';
+        const b = document.getElementById('badgeT2');
+        b.className = 'plat-badge off'; b.textContent = 'Pr\u00f3ximamente';
+        document.getElementById('arrowT2').style.display = 'none';
+    }
+</script>
+</body>
+</html>

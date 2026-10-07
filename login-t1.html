@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EfletexIA - Iniciar sesi&#243;n T1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#FFF7ED', 100: '#FFEDD5', 200: '#FED7AA', 300: '#FDBA74', 400: '#FB923C', 500: '#F97316', 600: '#EA580C', 700: '#C2410C' },
+                        dark: { 950: '#050505', 900: '#0A0A0A', 800: '#111111', 700: '#1A1A1A', 600: '#222222', 500: '#2A2A2A' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .map-grid {
+            background-image:
+                linear-gradient(rgba(249,115,22,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249,115,22,0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .stat-pill {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 12px 20px; text-align: center;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up-anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+
+        /* Formulario (mismo estilo del login de la web) */
+        .form-input {
+            width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; color: white; padding: 11px 14px; font-size: 14px; outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input::placeholder { color: rgba(255,255,255,0.3); }
+        .form-input:focus { border-color: rgba(249,115,22,0.45); box-shadow: 0 0 0 3px rgba(249,115,22,0.07); }
+        .input-icon-wrap { position: relative; }
+        .input-icon-wrap .input-icon {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: rgba(255,255,255,0.3); pointer-events: none; display: flex; align-items: center;
+        }
+        .input-icon-wrap .form-input { padding-left: 38px; }
+        .input-icon-wrap .pw-toggle {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            color: rgba(255,255,255,0.3); cursor: pointer; display: flex; align-items: center; transition: color 0.2s ease;
+        }
+        .input-icon-wrap .pw-toggle:hover { color: rgba(249,115,22,0.7); }
+        .btn-primary {
+            background: #F97316; color: white; font-weight: 600; border-radius: 10px; padding: 12px 24px;
+            font-size: 15px; width: 100%; border: none; box-shadow: 0 0 24px rgba(249,115,22,0.25); transition: all 0.3s ease;
+        }
+        .btn-primary:hover { box-shadow: 0 0 40px rgba(249,115,22,0.45); transform: translateY(-1px); background: #EA580C; }
+        .btn-secondary {
+            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.75); font-weight: 500; border-radius: 10px;
+            padding: 10px 16px; font-size: 14px; border: 1px solid rgba(255,255,255,0.08); transition: all 0.25s ease;
+        }
+        .btn-secondary:hover { border-color: rgba(249,115,22,0.45); color: white; }
+        .c-check { accent-color: #F97316; width: 16px; height: 16px; cursor: pointer; }
+        .plat-tag {
+            display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px;
+            background: linear-gradient(135deg, #F97316, #EA580C); color: #fff; font-weight: 800; font-size: 16px;
+            box-shadow: 0 0 20px rgba(249,115,22,0.35);
+        }
+        .social {
+            width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); transition: all 0.25s ease;
+        }
+        .social:hover { border-color: rgba(249,115,22,0.45); color: #F97316; }
+        .msg { display: none; margin-top: 4px; padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.55;
+               background: rgba(249,115,22,0.06); border: 1px solid rgba(249,115,22,0.25); color: #FB923C; }
+        .msg.on { display: block; }
+        .divider { height: 1px; background: rgba(255,255,255,0.07); }
+    </style>
+</head>
+<body class="bg-dark-900 text-white min-h-screen overflow-x-hidden">
+
+<div class="flex min-h-screen">
+
+    <!-- ===== PANEL DE MARCA ===== -->
+    <div class="hidden lg:flex flex-col w-[44%] flex-shrink-0 relative overflow-hidden bg-dark-950">
+        <div class="absolute inset-0 map-grid"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%); pointer-events:none;"></div>
+        <div class="absolute bottom-[-5%] right-[-10%] w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(0,212,255,0.04) 0%, transparent 70%); pointer-events:none;"></div>
+
+        <div class="relative z-10 flex flex-col h-full p-10">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="font-bold text-lg tracking-tight">EfletexIA</a>
+                <a href="index.html" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors">
+                    <span data-icon="lucide:arrow-left" class="text-xs"></span> Volver al sitio
+                </a>
+            </div>
+
+            <div class="mt-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium" style="background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.2); color: #FB923C;">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+                    Plataforma T1 &#183; Distribuci&#243;n primaria
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h1 class="text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight">
+                    &#161;Bienvenido a<br><span class="gradient-text">Efletexia!</span>
+                </h1>
+                <p class="mt-4 text-white/50 text-base leading-relaxed max-w-sm">
+                    La plataforma colaborativa que conecta a comisionistas, conductores, generadores de carga, emprendedores y empresas.
+                </p>
+            </div>
+
+            <div class="mt-8 flex flex-col gap-3.5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.15);">
+                        <span data-icon="lucide:package" style="color:#F97316;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">Publica cargas y recibe ofertas</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.15);">
+                        <span data-icon="lucide:truck" style="color:#00D4FF;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">Gestiona veh&#237;culos y conductores</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(0,255,148,0.08); border: 1px solid rgba(0,255,148,0.15);">
+                        <span data-icon="lucide:receipt" style="color:#00FF94;" class="text-sm"></span>
+                    </div>
+                    <span class="text-sm text-white/60">Facturaci&#243;n y operador log&#237;stico</span>
+                </div>
+            </div>
+
+            <div class="mt-auto">
+                <p class="text-sm text-white/40 mb-3">Conoce m&#225;s de nosotros en nuestras redes.</p>
+                <div class="flex gap-2.5">
+                    <a class="social" href="https://www.facebook.com/efletexia" target="_blank" rel="noopener" aria-label="Facebook"><span data-icon="lucide:facebook" class="text-base"></span></a>
+                    <a class="social" href="https://wa.me/+522223284900" target="_blank" rel="noopener" aria-label="WhatsApp"><span data-icon="lucide:message-circle" class="text-base"></span></a>
+                    <a class="social" href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><span data-icon="lucide:instagram" class="text-base"></span></a>
+                </div>
+            </div>
+            <div class="mt-6 text-xs text-white/20">&#169; 2026 EfletexIA &#183; Todos los derechos reservados</div>
+        </div>
+    </div>
+
+    <!-- ===== FORMULARIO ===== -->
+    <div class="flex-1 flex flex-col min-h-screen overflow-y-auto bg-dark-900">
+
+        <div class="lg:hidden flex items-center justify-between px-6 pt-6 pb-4">
+            <a href="index.html" class="font-bold text-base tracking-tight">EfletexIA</a>
+            <a href="acceso-t1t2.html" class="flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors">
+                <span data-icon="lucide:arrow-left" class="text-xs"></span> Plataformas
+            </a>
+        </div>
+
+        <div class="flex-1 flex items-start lg:items-center justify-center px-6 py-8 lg:py-12">
+            <div class="w-full max-w-md fade-up-anim">
+
+                <a href="acceso-t1t2.html" class="hidden lg:inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white/70 transition-colors mb-8">
+                    <span data-icon="lucide:arrow-left" class="text-xs"></span> Elegir otra plataforma
+                </a>
+
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="plat-tag">T1</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Iniciar sesi&#243;n</h2>
+                        <p class="text-sm text-white/40 mt-0.5">Ingresa tu correo y contrase&#241;a de la plataforma T1.</p>
+                    </div>
+                </div>
+
+                <form onsubmit="entrar(event)" novalidate>
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <label class="block text-xs font-medium text-white/50 mb-2 uppercase tracking-wider" for="correo">Correo electr&#243;nico</label>
+                            <div class="input-icon-wrap">
+                                <span class="input-icon"><span data-icon="lucide:mail" class="text-sm"></span></span>
+                                <input id="correo" type="email" class="form-input" placeholder="tu@empresa.com" autocomplete="username">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs font-medium text-white/50 uppercase tracking-wider" for="clave">Contrase&#241;a</label>
+                                <a id="lnkOlvide" href="#" target="_blank" rel="noopener" class="text-xs text-brand-400 hover:text-brand-300 transition-colors">&#191;Olvidaste tu contrase&#241;a?</a>
+                            </div>
+                            <div class="input-icon-wrap">
+                                <span class="input-icon"><span data-icon="lucide:lock" class="text-sm"></span></span>
+                                <input id="clave" type="password" class="form-input" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" style="padding-right: 42px;">
+                                <span class="pw-toggle" onclick="verClave(this)"><span data-icon="lucide:eye" class="text-sm"></span></span>
+                            </div>
+                        </div>
+
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" class="c-check">
+                            <span class="text-sm text-white/50">Recordar sesi&#243;n</span>
+                        </label>
+
+                        <button type="submit" class="btn-primary mt-1">
+                            <span class="flex items-center justify-center gap-2">Iniciar sesi&#243;n <span data-icon="lucide:arrow-right" class="text-sm"></span></span>
+                        </button>
+                        <div id="msg" class="msg"></div>
+                    </div>
+                </form>
+
+                <p class="text-xs text-white/35 mt-5 leading-relaxed">
+                    Los cambios de contrase&#241;a y la habilitaci&#243;n de accesos se gestionan con
+                    <a id="lnkSoporte" href="#" target="_blank" rel="noopener" class="text-brand-400 hover:text-brand-300">Soporte</a>.
+                </p>
+
+                <div class="divider my-8"></div>
+
+                <div class="flex items-center justify-between gap-4">
+                    <span class="text-sm text-white/40">&#191;A&#250;n no tienes una cuenta?</span>
+                    <a href="#" onclick="aviso('Maqueta: aqu&#237; se enlaza el registro actual de T1.');return false" class="btn-secondary">Reg&#237;strate &#8594;</a>
+                </div>
+
+                <div class="mt-10 flex gap-4 text-xs text-white/30">
+                    <a href="index.html" class="hover:text-white/60">Inicio</a>
+                    <span>&#183;</span>
+                    <a href="acceso-t1t2.html" class="hover:text-white/60">Plataformas</a>
+                    <span>&#183;</span>
+                    <a id="lnkSoporte2" href="#" target="_blank" rel="noopener" class="hover:text-white/60">Soporte</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Maqueta de dise\u00f1o: el inicio de sesi\u00f3n real lo valida la plataforma T1.
+    const SOPORTE = 'https://portal-usuarios.dtdevops.com/';
+    ['lnkOlvide', 'lnkSoporte', 'lnkSoporte2'].forEach(id => document.getElementById(id).href = SOPORTE);
+
+    function verClave(el) {
+        const c = document.getElementById('clave');
+        c.type = c.type === 'password' ? 'text' : 'password';
+        el.innerHTML = '<span data-icon="lucide:' + (c.type === 'password' ? 'eye' : 'eye-off') + '" class="iconify text-sm"></span>';
+    }
+    document.querySelectorAll('[data-icon]').forEach(e => e.classList.add('iconify'));
+    function aviso(t) { const m = document.getElementById('msg'); m.textContent = t; m.className = 'msg on'; }
+    function entrar(e) { e.preventDefault(); aviso('Maqueta de dise\u00f1o: en la plataforma real este bot\u00f3n valida el acceso a T1.'); }
+</script>
+</body>
+</html>
